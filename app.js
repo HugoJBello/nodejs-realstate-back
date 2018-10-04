@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var summariesRouter = require('./routes/summaries');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var morgan = require('morgan');
 
 var app = express();
 
@@ -17,6 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(morgan('combined'))
 
 var mongoURL = "";
 var mongoHost = process.env['MONGODB_HOST_MLAB'],
@@ -36,8 +38,16 @@ if (mongoHost && mongoPort && mongoDatabase) {
 
 }
 console.log(mongoURL);
-mongoose.connect(mongoURL);
+var settings = {
+    reconnectTries : Number.MAX_VALUE,
+    autoReconnect : true,
+    useNewUrlParser: true
+};
+mongoose.connect(mongoURL,  settings).catch(err => console.log('Mongo connection error', err));
+var db = mongoose.connection;
 
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
