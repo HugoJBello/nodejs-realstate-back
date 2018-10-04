@@ -24,7 +24,7 @@ summaryFind = (res, skip, limit) => {
     Summary.find({}).sort({ date: -1 }).limit(limit).skip(skip).exec(function (err, summaries) {
         if (err) {
             console.log(err);
-            throw err
+            throw err;
         }
         if (!summaries) {
             return res.json({ error: "No page Found" })
