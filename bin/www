@@ -20,10 +20,11 @@ app.set('port', port);
  * Create HTTP server.
  */
 var options = {
-  key: fs.readFileSync('./bin/client-key.pem'),
-  cert: fs.readFileSync('./bin/client-cert.pem')
+  key: fs.readFileSync('./bin/key.pem'),
+  cert: fs.readFileSync('./bin/csr.pem')
 };
-var server = https.createServer(options, app);
+//var server = https.createServer(options, app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
