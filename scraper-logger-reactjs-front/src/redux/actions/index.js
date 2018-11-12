@@ -8,14 +8,14 @@ export const GET_EXECUTION_ID = "scraper:getExecutionId";
 export const updateScraper = newScraper => ({
     type: UPDATE_SCRAPER,
     payload: {
-        user: newScraper
+        scraper: newScraper
     }
 })
 
 export const updateExecutionId = newExecutionId => ({
     type: UPDATE_EXECUTION_ID,
     payload: {
-        user: newExecutionId
+        executionId: newExecutionId
     }
 })
 

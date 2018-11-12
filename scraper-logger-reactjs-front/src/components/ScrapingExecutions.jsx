@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { getExecutions } from './services/executionService';
 
 class ScrapingExecutions extends Component {
     constructor(props) {
