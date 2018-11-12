@@ -6,49 +6,35 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var summariesRouter = require('./routes/summaries');
+var stateExecutionRouter = require('./routes/stateExecution');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 
 var app = express();
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').load();
-}
+require('dotenv').load();
+
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(morgan('combined'))
 
-var mongoURL = "";
-var mongoHost = process.env['MONGODB_HOST_MLAB'],
-  mongoPort = process.env['MONGODB_PORT_MLAB'],
-  mongoDatabase = process.env['MONGODB_DATABASE_MLAB'],
-  mongoPassword = process.env['MONGODB_PASSWORD_MLAB'],
-  mongoUser = process.env['MONGODB_USER_MLAB'];
+const mongoURL = process.env['MONGODB_URL']
 
-if (mongoHost && mongoPort && mongoDatabase) {
-  mongoURLLabel = mongoURL = 'mongodb://';
-  if (mongoUser && mongoPassword) {
-    mongoURL += mongoUser + ':' + mongoPassword + '@';
-  }
-  // Provide UI label that excludes user id and pw
-  mongoURLLabel += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
-  mongoURL += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
-
-}
-console.log(mongoURL);
-var settings = {
-    reconnectTries : Number.MAX_VALUE,
-    autoReconnect : true,
-    useNewUrlParser: true
+const settings = {
+  reconnectTries: Number.MAX_VALUE,
+  autoReconnect: true,
+  useNewUrlParser: true
 };
-mongoose.connect(mongoURL,  settings).catch(err => console.log('Mongo connection error', err));
-var db = mongoose.connection;
+mongoose.connect(mongoURL, settings).catch(err => console.log('Mongo connection error', err));
+const db = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
+db.once('open', function () {
+  console.log("succesfully connected");
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -61,6 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/summaries', summariesRouter);
+app.use('/stateExecution', stateExecutionRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -11,12 +11,12 @@ var SummarySchema = new Schema(
         number_of_items: Number,
         prize_m2: Number,
         obtained_prize_m2: Number
-    },
-    { collection: 'summary' });
+    });
 
 // the schema is useless so far
 // we need to create a model using it
-var Summary = mongoose.model('Summary', SummarySchema);
+const fotocasaSummaryCollectionName = "summaries-fotocasa-scraping";
+var Summary = mongoose.model('Summary', SummarySchema, fotocasaSummaryCollectionName);
 
 // make this available to our users in our Node applications
 module.exports = Summary;
