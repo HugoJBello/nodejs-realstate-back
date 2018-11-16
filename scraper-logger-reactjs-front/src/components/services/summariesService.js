@@ -14,7 +14,7 @@ const getSummary = (entryName) => {
 
 ///summaries/summaries-fotocasa-scraping/skip=0&limit=2
 const getSummaries = (dbName, limit, skip) => {
-    const url = `${BASE_URL}/summaries/${dbName}/skip=${skip}&limit=${limit}`;
+    const url = `${BASE_URL}/summaries/${dbName}?skip=${skip}&limit=${limit}`;
     //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
     return axios.get(url).then(response => response.data);
 }

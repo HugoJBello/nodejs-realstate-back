@@ -12,9 +12,9 @@ const getExecution = (entryName) => {
     //return axios.get(url).then(response => response.data);
 }
 
-// /stateExecution/state-execution-airbnb-scraping/skip=0&limit=2
+// /stateExecution/state-execution-airbnb-scraping?skip=0&limit=2
 const getExecutions = (dbName, limit, skip) => {
-    const url = `${BASE_URL}/stateExecution/${dbName}/skip=${skip}&limit=${limit}`;
+    const url = `${BASE_URL}/stateExecution/${dbName}?skip=${skip}&limit=${limit}`;
     //axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
     return axios.get(url).then(response => response.data);
 }

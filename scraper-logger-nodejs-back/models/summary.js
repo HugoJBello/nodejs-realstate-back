@@ -9,9 +9,9 @@ var SummarySchema = new Schema(
         date: Date,
         url_scrapped: String,
         number_of_items: Number,
-        prize_m2: Number,
-        obtained_prize_m2: Number
+        cusecs: Object
     });
+SummarySchema.index({ '$**': 'text' });
 
 // the schema is useless so far
 // we need to create a model using it
