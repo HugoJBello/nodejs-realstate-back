@@ -11,8 +11,8 @@ class ScrapingExecutions extends Component {
         }
     }
 
-    componentDidMount() {
-        const retrievedExec = getExecutions(this.state.dbName, this.state.limit, this.state.skip);
+    async componentDidMount() {
+        const retrievedExec = await getExecutions(this.state.dbName, this.state.limit, this.state.skip);
         console.log(retrievedExec);
         this.setState({ retrievedExec })
     }
