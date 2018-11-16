@@ -2,7 +2,7 @@ var express = require('express');
 var Summary = require('../models/summary');
 var router = express.Router();
 
-//http://localhost:3001/summaries/summaries-fotocasa-scraping?skip=0&limit=2
+//http://localhost:3001/summaries/summaries-fotocasa-scraping/?skip=0&limit=2
 router.get('/:db',
     function (req, res) {
         let skip;

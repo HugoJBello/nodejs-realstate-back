@@ -2,7 +2,7 @@ var express = require('express');
 var StateExecution = require('../models/stateExecution');
 var router = express.Router();
 
-//http://localhost:3001/stateExecution/state-execution-airbnb-scraping?skip=0&limit=2
+//http://localhost:3001/stateExecution/state-execution-airbnb-scraping/?skip=0&limit=2
 router.get('/:db',
     function (req, res) {
         let skip;
