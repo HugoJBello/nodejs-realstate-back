@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var summariesRouter = require('./routes/summaries');
@@ -18,7 +19,7 @@ require('dotenv').load();
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(morgan('combined'))
-
+app.use(cors());
 const mongoURL = process.env['MONGODB_URL']
 
 const settings = {
