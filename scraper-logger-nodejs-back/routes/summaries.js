@@ -1,5 +1,7 @@
 var express = require('express');
-var Summary = require('../models/summary');
+var SummaryFotocasa = require('../models/summary').SummaryFotocasa;
+var SummaryAirbnb = require('../models/summary').SummaryAirbnb;
+
 var router = express.Router();
 
 //http://localhost:3001/summaries/summaries-fotocasa-scraping/?skip=0&limit=2
@@ -13,7 +15,7 @@ router.get('/:db',
         if (req.query.limit) limit = parseInt(req.query.limit)
         if (req.query.roder) order = parseInt(req.query.order);
         console.log("----> limit " + limit + " skip " + skip + " order " + order);
-        summaryFind(res, req.query.skip, limit);
+        summaryFind(res, req.query.skip, limit, db);
     });
 
 router.get('/',
@@ -25,13 +27,18 @@ router.get('/',
         if (req.query.limit) limit = parseInt(req.query.limit)
         if (req.query.roder) order = parseInt(req.query.order);
         console.log("----> limit " + limit + " skip " + skip + " order " + order);
-        summaryFind(res, skip, limit);
+        summaryFind(res, skip, limit, undefined);
     });
 
-summaryFind = (res, skip, limit) => {
+summaryFind = (res, skip, limit, db) => {
     console.log("---" + skip);
 
-    Summary.find({}).find({}).sort({ date: -1 }).limit(limit).skip(Number(skip)).exec(function (err, executions) {
+    if (db.indexOf("fotocasa") > -1) {
+        dbSchema = SummaryFotocasa;
+    } else {
+        dbSchema = SummaryAirbnb;
+    }
+    dbSchema.find({}).find({}).sort({ date: -1 }).limit(limit).skip(Number(skip)).exec(function (err, executions) {
         if (err) {
             console.log(err);
             //throw err;

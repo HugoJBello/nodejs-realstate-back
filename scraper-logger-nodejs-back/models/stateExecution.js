@@ -15,7 +15,19 @@ var StateExecutionSchema = new Schema(
 // the schema is useless so far
 // we need to create a model using it
 const fotocasaStateCollectionName = "state-execution-fotocasa-scraping";
-const StateExecution = mongoose.model('StateExecution', StateExecutionSchema, fotocasaStateCollectionName);
+const airbnbStateCollectionName = "state-execution-airbnb-scraping";
+
+const fotocasaDbName = "fotocasa-db";
+const airbnbDbName = "airbnb-db";
+
+const dbFotocasa = mongoose.connection.useDb(fotocasaDbName);
+const dbAirbnb = mongoose.connection.useDb(airbnbDbName);
+
+
+const StateExecutionFotocasa = dbFotocasa.model('StateExecutionFotocasa', StateExecutionSchema, fotocasaStateCollectionName);
+const StateExecutionAirbnb = dbAirbnb.model('StateExecutionAirbnb', StateExecutionSchema, airbnbStateCollectionName);
+
 
 // make this available to our users in our Node applications
-module.exports = StateExecution;
+module.exports = { StateExecutionFotocasa, StateExecutionAirbnb };
+//module.exports = StateExecutionAirbnb;

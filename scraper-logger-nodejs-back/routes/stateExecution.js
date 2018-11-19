@@ -1,5 +1,7 @@
 var express = require('express');
-var StateExecution = require('../models/stateExecution');
+var StateExecutionFotocasa = require('../models/stateExecution').StateExecutionFotocasa;
+var StateExecutionAirbnb = require('../models/stateExecution').StateExecutionAirbnb;
+
 var router = express.Router();
 
 //http://localhost:3001/stateExecution/state-execution-airbnb-scraping/?skip=0&limit=2
@@ -13,7 +15,7 @@ router.get('/:db',
         if (req.query.limit) limit = parseInt(req.query.limit)
         if (req.query.roder) order = parseInt(req.query.order);
         console.log("----> limit " + limit + " skip " + skip + " order " + order);
-        stateExecutionFind(res, skip, limit, order);
+        stateExecutionFind(res, skip, limit, order, db);
     });
 
 router.get('/',
@@ -24,11 +26,19 @@ router.get('/',
         if (req.query.skip) skip = parseInt(req.query.skip, 10)
         if (req.query.limit) limit = parseInt(req.query.limit)
         if (req.query.roder) order = parseInt(req.query.order);
-        stateExecutionFind(res, undefined, limit, order);
+        stateExecutionFind(res, undefined, limit, order, undefined);
     });
 
-stateExecutionFind = (res, skip, limit, order = -1) => {
-    StateExecution.find({}).sort({ date: -1 }).limit(limit).skip(skip).exec(function (err, executions) {
+stateExecutionFind = (res, skip, limit, order = -1, db) => {
+    let dbSchema;
+
+    if (db.indexOf("fotocasa") > -1) {
+        dbSchema = StateExecutionFotocasa;
+    } else {
+        dbSchema = StateExecutionAirbnb;
+    }
+
+    dbSchema.find({}).sort({ date: -1 }).limit(limit).skip(skip).exec(function (err, executions) {
         if (err) {
             console.log(err);
             throw err;
