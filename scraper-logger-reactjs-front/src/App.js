@@ -8,6 +8,11 @@ import { Provider } from 'react-redux'
 import rootReducer from './redux/reducers'
 import { createStore } from 'redux'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStroopwafel } from '@fortawesome/free-solid-svg-icons'
+library.add(faStroopwafel)
+
 const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 
 class App extends Component {

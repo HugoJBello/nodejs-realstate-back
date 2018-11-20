@@ -5,6 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
+import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
