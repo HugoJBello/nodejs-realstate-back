@@ -10,7 +10,8 @@ class ScrapingExecutions extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dbName: "state-execution-fotocasa-scraping",
+            //dbName: "state-execution-fotocasa-scraping",
+            dbName: "state-execution-airbnb-scraping",
             limit: 100,
             skip: 0,
             order: -1,
@@ -20,9 +21,13 @@ class ScrapingExecutions extends Component {
     }
 
     async componentDidMount() {
-        const retrievedExec = await getExecutions(this.state.dbName, this.state.limit, this.state.skip, this.state.order);
-        this.setState({ retrievedExec })
-        console.log(this.state);
+        const self = this;
+        setInterval(async () => {
+            const retrievedExec = await getExecutions(self.state.dbName, self.state.limit, self.state.skip, self.state.order);
+            this.setState({ retrievedExec })
+            console.log(self.state);
+        }, 1000);
+
     }
 
     render() {
@@ -40,11 +45,10 @@ class ScrapingExecutions extends Component {
     }
     executionTable = () => {
         return (<BootstrapTable data={this.state.retrievedExec} version='4'>
-            <TableHeaderColumn isKey dataField='_id'>id</TableHeaderColumn>
-            <TableHeaderColumn dataField='scrapingId'>scrapingId</TableHeaderColumn>
+            <TableHeaderColumn isKey dataField='scrapingId'>scrapingId</TableHeaderColumn>
             <TableHeaderColumn dataField='date'>date</TableHeaderColumn>
-            <TableHeaderColumn dataField='date' dataFormat={this.priceFormatter.bind(this)} >isActive</TableHeaderColumn>
-            <TableHeaderColumn dataField='lastNmun'>lastNmun</TableHeaderColumn>
+            <TableHeaderColumn dataField='date' dataFormat={this.priceFormatter.bind(this)} width='150' >isActive</TableHeaderColumn>
+            <TableHeaderColumn dataField='lastNmun' width='150'>lastNmun</TableHeaderColumn>
         </BootstrapTable>);
     }
 
