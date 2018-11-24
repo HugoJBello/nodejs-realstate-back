@@ -10,13 +10,13 @@ class ScrapingExecutions extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            //dbName: "state-execution-fotocasa-scraping",
-            dbName: "state-execution-airbnb-scraping",
+            dbName: "state-execution-fotocasa-scraping",
+            //dbName: "state-execution-airbnb-scraping",
             limit: 100,
             skip: 0,
             order: -1,
             maxDateDiff: 1000 * 60 * 20,
-            retrievedExec: null
+            retrievedExec: []
         }
     }
 
@@ -44,12 +44,49 @@ class ScrapingExecutions extends Component {
         return (<div>{isActive && <FontAwesomeIcon icon="stroopwafel"></FontAwesomeIcon>}</div>);
     }
     executionTable = () => {
-        return (<BootstrapTable data={this.state.retrievedExec} version='4'>
-            <TableHeaderColumn isKey dataField='scrapingId'>scrapingId</TableHeaderColumn>
-            <TableHeaderColumn dataField='date'>date</TableHeaderColumn>
-            <TableHeaderColumn dataField='date' dataFormat={this.priceFormatter.bind(this)} width='150' >isActive</TableHeaderColumn>
-            <TableHeaderColumn dataField='lastNmun' width='150'>lastNmun</TableHeaderColumn>
-        </BootstrapTable>);
+        return (<div className="responsibe-table">
+        <table className="table">
+            <thead>
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">date</th>
+                <th scope="col">last city</th>
+                <th scope="col">last piece</th>
+                <th scope="col">device</th>
+                <th scope="col">state</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.state.retrievedExec.map((execution, index) => 
+                    <tr key={index}>
+                    <th scope="row"> {execution.scrapingId}</th>
+                    <td>{execution.date}</td>
+                    <td>{execution.lastNmun}</td>
+                    <td>{execution.lastPart}</td>
+                    <td>{this.getDeviceId(execution)}</td>
+                    <td>{this.getActiveIcon(execution)}</td>
+                    </tr>
+                )}
+                
+            </tbody>
+        </table>
+        </div>);
+    }
+
+    getDeviceId = (execution) =>{
+        if (execution.config){
+            return execution.config.deviceId;
+        } else {
+            return null;
+        }
+    }
+
+    getActiveIcon = (execution) =>{
+        const date = (new Date(execution.date)).getTime();
+        const dateNow = (new Date()).getTime();
+        const dateDiff = dateNow - date
+        const isActive = dateDiff < this.state.maxDateDiff;
+        return (<div>{isActive && <FontAwesomeIcon icon="stroopwafel"></FontAwesomeIcon>}</div>);
     }
 
 }
