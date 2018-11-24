@@ -1,0 +1,6 @@
+.big-cell{
+    max-width: 100px;
+    overflow-wrap: break-word;
+    word-break: break-all;
+
+}

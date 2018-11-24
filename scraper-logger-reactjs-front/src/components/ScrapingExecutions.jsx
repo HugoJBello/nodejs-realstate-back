@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { getExecutions } from './services/executionService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import './scrapingResults.css';
 const ReactBsTable = require('react-bootstrap-table');
 const BootstrapTable = ReactBsTable.BootstrapTable;
 const TableHeaderColumn = ReactBsTable.TableHeaderColumn;
@@ -44,15 +44,14 @@ class ScrapingExecutions extends Component {
         return (<div>{isActive && <FontAwesomeIcon icon="stroopwafel"></FontAwesomeIcon>}</div>);
     }
     executionTable = () => {
-        return (<div className="responsibe-table">
-        <table className="table">
+        return (<div className="">
+        <table className="table table-striped">
             <thead>
                 <tr>
-                <th scope="col">Id</th>
+                <th scope="col">id</th>
                 <th scope="col">date</th>
                 <th scope="col">last city</th>
                 <th scope="col">last piece</th>
-                <th scope="col">device</th>
                 <th scope="col">state</th>
                 </tr>
             </thead>
@@ -60,10 +59,9 @@ class ScrapingExecutions extends Component {
                 {this.state.retrievedExec.map((execution, index) => 
                     <tr key={index}>
                     <th scope="row"> {execution.scrapingId}</th>
-                    <td>{execution.date}</td>
+                    <td className="big-cell">{execution.date}</td>
                     <td>{execution.lastNmun}</td>
                     <td>{execution.lastPart}</td>
-                    <td>{this.getDeviceId(execution)}</td>
                     <td>{this.getActiveIcon(execution)}</td>
                     </tr>
                 )}
