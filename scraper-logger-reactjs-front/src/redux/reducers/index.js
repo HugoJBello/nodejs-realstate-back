@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
-import scraper from './scraper';
+import scraperSummary from './scraperSummary';
 import executionId from './executionId';
+import dbName from './dbName';
 export default combineReducers({
-    scraper, executionId
+    scraperSummary, executionId, dbName
 });

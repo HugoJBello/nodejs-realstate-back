@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { getExecutions } from './services/executionService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import './scrapingResults.css';
-const ReactBsTable = require('react-bootstrap-table');
-const BootstrapTable = ReactBsTable.BootstrapTable;
-const TableHeaderColumn = ReactBsTable.TableHeaderColumn;
+import { connect } from 'react-redux';
+import { updateExecutionId, getExecutionId } from '../redux/actions';
 
 class ScrapingExecutions extends Component {
     constructor(props) {
@@ -25,6 +24,7 @@ class ScrapingExecutions extends Component {
         setInterval(async () => {
             const retrievedExec = await getExecutions(self.state.dbName, self.state.limit, self.state.skip, self.state.order);
             this.setState({ retrievedExec })
+            //this.onUpdateExecutionId(retrievedExec[0]);
             console.log(self.state);
         }, 1000);
 
@@ -58,7 +58,7 @@ class ScrapingExecutions extends Component {
             <tbody>
                 {this.state.retrievedExec.map((execution, index) => 
                     <tr key={index}>
-                    <th scope="row"> {execution.scrapingId}</th>
+                    <td scope="row"> <a onClick={this.selectScrapingId} name={index}>{execution.scrapingId}</a></td>
                     <td className="big-cell">{execution.date}</td>
                     <td>{execution.lastNmun}</td>
                     <td>{execution.lastPart}</td>
@@ -71,12 +71,11 @@ class ScrapingExecutions extends Component {
         </div>);
     }
 
-    getDeviceId = (execution) =>{
-        if (execution.config){
-            return execution.config.deviceId;
-        } else {
-            return null;
-        }
+
+    selectScrapingId = (event) => {
+        console.log(event.target.name);
+        const execution = this.state.retrievedExec[parseInt(event.target.name)];
+        this.onUpdateExecutionId(execution);
     }
 
     getActiveIcon = (execution) =>{
@@ -87,6 +86,19 @@ class ScrapingExecutions extends Component {
         return (<div>{isActive && <FontAwesomeIcon icon="stroopwafel"></FontAwesomeIcon>}</div>);
     }
 
+    onUpdateExecutionId = (execution) => {
+        this.props.onUpdateExecutionId(execution);
+    }
+
 }
 
-export default ScrapingExecutions;
+const mapStateToProps = state => ({
+    scrapingId: state.scrapingId
+});
+
+const mapActionsToProps = {
+    onUpdateExecutionId: updateExecutionId,
+    onGetExecutionId: getExecutionId,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(ScrapingExecutions);

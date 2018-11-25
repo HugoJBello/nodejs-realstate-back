@@ -32,12 +32,19 @@ class AppNavbar extends React.Component {
                     </ul>
                     {this.props.executionId != "" &&
                         <div className="nav-item my-sm-0">
-                            <div className="nav-link" >{this.props.executionId}</div>
+                            <div className="nav-link" >{this.getSelectedScrapingId()}</div>
                         </div>
                     }
                 </div>
             </nav>
         )
+    }
+    getSelectedScrapingId = () => {
+        if(this.props.executionId){
+            return this.props.executionId.scrapingId
+        } else {
+            return ""
+        }
     }
 }
 

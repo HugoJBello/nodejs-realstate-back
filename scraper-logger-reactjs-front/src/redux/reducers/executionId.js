@@ -1,6 +1,6 @@
 import { UPDATE_EXECUTION_ID, GET_EXECUTION_ID } from '../actions'
 
-const scraper = (state = "", action) => {
+const scraperSummary = (state = {}, action) => {
     switch (action.type) {
         case UPDATE_EXECUTION_ID:
             return action.payload.executionId;
@@ -10,4 +10,4 @@ const scraper = (state = "", action) => {
             return state;
     }
 }
-export default scraper
+export default scraperSummary

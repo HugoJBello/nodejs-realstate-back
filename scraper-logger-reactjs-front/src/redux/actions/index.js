@@ -1,14 +1,16 @@
-export const UPDATE_SCRAPER = "scraper:updateScraper";
-export const GET_SCRAPER = "scraper:getScraper";
+export const UPDATE_SCRAPING_SUMMARY = "scraper:updateScraperSummary";
+export const GET_SCRAPER_SUMMARY = "scraper:getScraperSummary";
 
 export const UPDATE_EXECUTION_ID = "scraper:updateExecutionId";
 export const GET_EXECUTION_ID = "scraper:getExecutionId";
 
+export const UPDATE_DBNAME = "scraper:updateDbName";
+export const GET_DBNAME = "scraper:getDbName";
 
-export const updateScraper = newScraper => ({
-    type: UPDATE_SCRAPER,
+export const updateScraperSummary = newScraperSummary => ({
+    type: UPDATE_SCRAPING_SUMMARY,
     payload: {
-        scraper: newScraper
+        scraper: newScraperSummary
     }
 })
 
@@ -19,10 +21,21 @@ export const updateExecutionId = newExecutionId => ({
     }
 })
 
+export const updateDbName = newDbName => ({
+    type: UPDATE_DBNAME,
+    payload: {
+        dbName: newDbName
+    }
+})
+
 export const getScraper = () => ({
-    type: GET_SCRAPER,
+    type: GET_SCRAPER_SUMMARY,
 })
 
 export const getExecutionId = () => ({
     type: GET_EXECUTION_ID,
+})
+
+export const getDbName = () => ({
+    type: GET_DBNAME,
 })

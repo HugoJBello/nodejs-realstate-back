@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { getSummaries } from './services/summariesService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const ReactBsTable = require('react-bootstrap-table');
-const BootstrapTable = ReactBsTable.BootstrapTable;
-const TableHeaderColumn = ReactBsTable.TableHeaderColumn;
+import { connect } from 'react-redux';
+import { updateExecutionId, getExecutionId } from '../redux/actions';
 
+ 
 class ScrapingSummaries extends Component {
     constructor(props) {
         super(props);
@@ -31,4 +31,13 @@ class ScrapingSummaries extends Component {
     }
 }
 
-export default ScrapingSummaries;
+const mapStateToProps = state => ({
+    scrapingId: state.scrapingId
+});
+
+const mapActionsToProps = {
+    onUpdateExecutionId: updateExecutionId,
+    onGetExecutionId: getExecutionId,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(ScrapingSummaries);
