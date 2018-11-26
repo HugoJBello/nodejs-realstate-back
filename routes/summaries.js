@@ -30,7 +30,7 @@ router.get('/',
         summariesFind(res, skip, limit, undefined);
     });
 
-//http://localhost:3001/summaries/summaries-fotocasa-scraping/scraping-fotocasa-raspberry2--2018-11-24_15_28_34?city=Madrid
+//http://localhost:3001/summaries/summaries-fotocasa-scraping/scraping-fotocasa-raspberry2--2018-11-24_15_28_34?cityName=Madrid
 router.get('/:db/:scrapingId',
     function (req, res) {
         let cityName;
