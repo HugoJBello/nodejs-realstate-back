@@ -8,6 +8,8 @@ var cors = require('cors');
 var indexRouter = require('./routes/index');
 var summariesRouter = require('./routes/summaries');
 var stateExecutionRouter = require('./routes/stateExecution');
+var stateExecutionMysqlRouter = require('./routes/stateExecutionMysql');
+
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
@@ -48,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/summaries', summariesRouter);
 app.use('/stateExecution', stateExecutionRouter);
-
+app.use('/mysql/stateExecution', stateExecutionMysqlRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
