@@ -9,12 +9,12 @@ router.get('/:db',
     function (req, res) {
         let skip;
         let limit;
-        let order;
+        let order = -1;
         let db = req.params.db;
         if (req.query.skip) skip = parseInt(req.query.skip, 10)
         if (req.query.limit) limit = parseInt(req.query.limit)
         if (req.query.roder) order = parseInt(req.query.order);
-        console.log("----> limit " + limit + " skip " + skip + " order " + order);
+        console.log("------> mongo limit " + limit + " skip " + skip + " order " + order);
         stateExecutionFind(res, skip, limit, order, db);
     });
 

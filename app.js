@@ -50,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/summaries', summariesRouter);
 app.use('/stateExecution', stateExecutionRouter);
-app.use('/mysql/stateExecution', stateExecutionMysqlRouter);
+app.use('/mysql-scraping-log', stateExecutionMysqlRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
