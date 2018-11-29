@@ -6,7 +6,7 @@ const db = new MysqlDataAccess(process.env["MYSQL_HOST"], process.env["MYSQL_USE
 
 const router = express.Router();
 
-//http://localhost:3001/mysql-stateExecution/state-execution-airbnb-scraping/?skip=0&limit=2
+//http://localhost:3001/mysql-scraping-log/state-execution-airbnb-scraping/?skip=0&limit=2
 router.get('/:db',
     function (req, res) {
         let skip;
@@ -17,7 +17,7 @@ router.get('/:db',
         if (req.query.limit) limit = parseInt(req.query.limit)
         if (req.query.roder) order = parseInt(req.query.order);
         console.log("----> limit " + limit + " skip " + skip + " order " + order);
-        stateExecutionFind(res, skip, limit, order, db);
+        stateExecutionFindMysql(res, skip, limit, order, db);
     });
 
 router.get('/',
