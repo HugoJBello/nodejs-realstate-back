@@ -55,6 +55,33 @@ module.exports = class MysqlDataAccess {
         } catch (err){
             return null;
         }
+    }
 
+    async getScrapingResults(limit,offset, order="asc"){
+        const sql = `select * from scraping_results left join scraping_pieces_index on scraping_results.piece_id = scraping_pieces_index.piece_id
+        order by date_scraped ${order}
+        limit ${limit}
+        offset ${offset};`;
+        try{
+            result = await this.runQuery(sql);
+            return result;
+        } catch (err){
+            console.log(err);
+            return null;
+        }
+    }
+
+    async getScrapingExecutionLog(limit,offset, order="asc"){
+        const sql = `select  t.last_piece,t.city_name, r.scraping_id, r.app_id, r.device_id, r.date_scraped,  r.average_prize_buy, r.number_of_ads_buy, r.average_prize_rent, r.number_of_ads_rent from (select * from scraping_execution_log left join  scraping_pieces_index on scraping_execution_log.last_piece = scraping_pieces_index.piece_id) t left join scraping_results r on t.last_piece = r.piece_id
+        order by r.date_scraped ${order}
+        limit ${limit}
+        offset ${offset};`;
+        try{
+            const result = await this.runQuery(sql);
+            return result;
+        } catch (err){
+            console.log(err);
+            return null;
+        }
     }
 }
