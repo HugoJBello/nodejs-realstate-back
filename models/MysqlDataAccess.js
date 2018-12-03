@@ -23,7 +23,7 @@ module.exports = class MysqlDataAccess {
             multipleStatements: this.multipleStatements
         });
     }
-    
+
 
     async runQuery(script) {
         const connection = this.connection;
@@ -46,32 +46,49 @@ module.exports = class MysqlDataAccess {
         return result[0];
     }
 
-    async countIndexEntries(){
+    async countIndexEntries() {
         const sql = "select count(*) from scraping_pieces_index";
         let result;
-        try{
+        try {
             result = await this.runQuery(sql);
             return parseInt(result[0]["count(*)"]);
-        } catch (err){
+        } catch (err) {
             return null;
         }
     }
 
-    async getScrapingResults(limit,offset, order="asc"){
+    async getScrapedCities(scraping_id) {
+        const sql = `select r.city_name from scraping_pieces_index r left join scraping_results t on  t.piece_id = r.piece_id
+        where t.scraping_id = "${scraping_id}"
+        group by r.city_name`;
+        const result = await this.runQuery(sql);
+        return result;
+    }
+
+    async getScrapingResultsCity(city_name, scraping_id) {
+        const sql = `select t.*, s.* from scraping_results t ,scraping_pieces_index s where
+        t.piece_id = s.piece_id and 
+        t.scraping_id = "${scraping_id}"
+        and s.city_name = "${city_name}";`;
+        const result = await this.runQuery(sql);
+        return result;
+    }
+
+    async getScrapingResults(limit, offset, order = "asc") {
         const sql = `select * from scraping_results left join scraping_pieces_index on scraping_results.piece_id = scraping_pieces_index.piece_id
         order by date_scraped ${order}
         limit ${limit}
         offset ${offset};`;
-        try{
+        try {
             result = await this.runQuery(sql);
             return result;
-        } catch (err){
+        } catch (err) {
             console.log(err);
             return null;
         }
     }
 
-    async getScrapingExecutionLog(limit,offset, order="desc"){
+    async getScrapingExecutionLog(limit, offset, order = "desc") {
         const sql = `select t.scraping_id, t.last_piece,r.date_scraped, r.app_id, r.device_id
         from (select * from scraping_execution_log 
         left join  scraping_pieces_index on scraping_execution_log.last_piece = scraping_pieces_index.piece_id) t 
@@ -79,10 +96,10 @@ module.exports = class MysqlDataAccess {
         order by r.date_scraped ${order}
         limit ${limit}
         offset ${offset};`;
-        try{
+        try {
             const result = await this.runQuery(sql);
             return result;
-        } catch (err){
+        } catch (err) {
             console.log(err);
             return null;
         }
