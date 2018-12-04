@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var summariesRouter = require('./routes/summaries');
 var stateExecutionRouter = require('./routes/stateExecution');
 var stateExecutionMysqlRouter = require('./routes/stateExecutionMysql');
+var summariesScrapingMysql = require('./routes/summariesScrapingMysql');
 
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
@@ -51,6 +52,7 @@ app.use('/', indexRouter);
 app.use('/summaries', summariesRouter);
 app.use('/stateExecution', stateExecutionRouter);
 app.use('/mysql-scraping-log', stateExecutionMysqlRouter);
+app.use('/mysql-summary-scraping', summariesScrapingMysql);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

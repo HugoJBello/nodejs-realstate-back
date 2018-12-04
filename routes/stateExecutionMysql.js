@@ -1,5 +1,5 @@
 const express = require('express');
-const MysqlDataAccess = require("../models/MysqlDataAccess");
+const MysqlDataAccess = require("../scraperDataProcess/MysqlDataAccess");
 require('dotenv').load();
 
 const db = new MysqlDataAccess(process.env["MYSQL_HOST"], process.env["MYSQL_USER"], process.env["MYSQL_PASSWORD"], process.env["MYSQL_DATABASE"]);
@@ -18,7 +18,7 @@ router.get('/',
     });
 
 stateExecutionFindMysql = async (res, skip, limit, order = "asc") => {
-    const result = await db.getScrapingExecutionLog(limit,skip);
+    const result = await db.getScrapingExecutionLog(limit, skip);
     return res.json(result);
 }
 
