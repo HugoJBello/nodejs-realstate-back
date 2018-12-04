@@ -18,12 +18,42 @@ router.get('/geoJson/',
         getGeoJson(city, scrapingId, res);
     });
 
+//http://localhost:3001/mysql-summary-scraping/results/?city=Alcalá de Henares&scraping_id=scraping-airbnb-gCloud--2018-11-29_14_04_43
+router.get('/results/',
+    (req, res) => {
+        let scrapingId;
+        let city;
+        if (req.query.city) city = req.query.city;
+        if (req.query.scraping_id) scrapingId = req.query.scraping_id;
+        getResults(city, scrapingId, res);
+    });
+
+//http://localhost:3001/mysql-summary-scraping/scraped_cities/?scraping_id=scraping-airbnb-gCloud--2018-11-29_14_04_43
+router.get('/scraped_cities/',
+    (req, res) => {
+        let city;
+        if (req.query.scraping_id) scrapingId = req.query.scraping_id;
+        getScrapedCities(scrapingId, res);
+    });
+
 getGeoJson = async (city, scrapingId, res) => {
     console.log("----> city " + city + " id " + scrapingId);
     const result = await db.getScrapingResultsCity(city, scrapingId);
     const geoJson = geoJsonGenerator.generateGeoJsonFromResult(result);
 
     return res.json(geoJson);
+}
+
+getResults = async (city, scrapingId, res) => {
+    console.log("----> city " + city + " id " + scrapingId);
+    const result = await db.getScrapingResultsCity(city, scrapingId);
+    return res.json(result);
+}
+
+getScrapedCities = async (scrapingId, res) => {
+    console.log("----> id " + scrapingId);
+    const result = await db.getScrapedCities(scrapingId);
+    return res.json(result);
 }
 
 module.exports = router;
