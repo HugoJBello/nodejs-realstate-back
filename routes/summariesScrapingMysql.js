@@ -47,6 +47,14 @@ router.get('/processInfo/',
         await getProcessInfo(device_id, scrapingId, res);
     });
 
+//http://localhost:3001/mysql-summary-scraping/scrapingRemaining/?device_id=raspberryOld
+router.get('/scrapingRemaining/',
+async (req, res) => {
+    let device_id;
+    if (req.query.device_id) device_id = req.query.device_id;
+    await getScrapingRemaining(device_id, res);
+});
+
 getGeoJson = async (city, scrapingId, res) => {
     console.log("----> city " + city + " id " + scrapingId);
     const result = await db.getScrapingResultsCity(city, scrapingId);
@@ -80,6 +88,19 @@ getProcessInfo = async (device_id, scrapingId, res) => {
     console.log(result);
     return res.json(result);
 }
+
+getScrapingRemaining = async (device_id, res) => {
+    console.log("----> id " + device_id);
+    const result ={};
+    const scrapedNum = await db.getScrapedCount(device_id, true);
+    const scrapedRemaning = await db.getScrapedCount(device_id, false);
+    result["scraped_pieces"] = scrapedNum;
+    result["scraped_remaining"]= scrapedRemaning;
+    result["scraped_pieces_percent"] = scrapedNum / (scrapedNum + scrapedRemaning) * 100;
+    console.log(result);
+    return res.json(result);
+}
+
 
 module.exports = router;
 
