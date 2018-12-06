@@ -127,4 +127,15 @@ module.exports = class MysqlDataAccess {
             return null;
         }
     }
+
+    //select device_id from scraping_pieces_index group by device_id;
+    async listDevices(scraping_id) {
+        const sql = `select device_id from scraping_pieces_index group by device_id`
+        try {
+            const result = await this.runQuery(sql);
+            return result;
+        } catch (err) {
+            return null;
+        }
+    }
 }

@@ -55,6 +55,13 @@ async (req, res) => {
     await getScrapingRemaining(device_id, res);
 });
 
+//http://localhost:3001/mysql-summary-scraping/scrapingRemainingAllDevices
+router.get('/scrapingRemainingAllDevices/',
+async (req, res) => {
+    await getScrapingRemainingAllDevices(res);
+});
+
+
 getGeoJson = async (city, scrapingId, res) => {
     console.log("----> city " + city + " id " + scrapingId);
     const result = await db.getScrapingResultsCity(city, scrapingId);
@@ -97,6 +104,22 @@ getScrapingRemaining = async (device_id, res) => {
     result["scraped_pieces"] = scrapedNum;
     result["scraped_remaining"]= scrapedRemaning;
     result["scraped_pieces_percent"] = scrapedNum / (scrapedNum + scrapedRemaning) * 100;
+    console.log(result);
+    return res.json(result);
+}
+
+getScrapingRemainingAllDevices = async (res) => {
+    const result ={};
+    const listDevices = await db.listDevices();
+    for (device_id of listDevices){
+        device_id = device_id.device_id;
+        result[device_id] ={};
+        const scrapedNum = await db.getScrapedCount(device_id, true);
+        const scrapedRemaning = await db.getScrapedCount(device_id, false);
+        result[device_id]["scraped_pieces"] = scrapedNum;
+        result[device_id]["scraped_remaining"]= scrapedRemaning;
+        result[device_id]["scraped_pieces_percent"] = scrapedNum / (scrapedNum + scrapedRemaning) * 100;
+    }
     console.log(result);
     return res.json(result);
 }
