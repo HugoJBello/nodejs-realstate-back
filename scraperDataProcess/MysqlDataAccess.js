@@ -104,4 +104,27 @@ module.exports = class MysqlDataAccess {
             return null;
         }
     }
+
+    async getScrapedCount(device_id, scraped) {
+        const sql = `select count(*) from scraping_pieces_index 
+        where scraped=${scraped} and  
+        device_id = "${device_id}";`
+        try {
+            const result = await this.runQuery(sql);
+            return parseInt(result[0]["count(*)"]);
+        } catch (err) {
+            return null;
+        }
+    }
+
+    //select * from scraping_execution_log where scraping_id = "";
+    async getLastPiece(scraping_id) {
+        const sql = `select * from scraping_execution_log where scraping_id = "${scraping_id}";`
+        try {
+            const result = await this.runQuery(sql);
+            return result;
+        } catch (err) {
+            return null;
+        }
+    }
 }

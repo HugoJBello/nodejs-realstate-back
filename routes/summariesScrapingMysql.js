@@ -32,8 +32,19 @@ router.get('/results/',
 router.get('/scraped_cities/',
     (req, res) => {
         let city;
+        let scrapingId;
         if (req.query.scraping_id) scrapingId = req.query.scraping_id;
         getScrapedCities(scrapingId, res);
+    });
+
+//http://localhost:3001/mysql-summary-scraping/processInfo/?device_id=raspberryOld&scraping_id=scraping-airbnb-gCloud--2018-11-29_14_04_43
+router.get('/processInfo/',
+    async (req, res) => {
+        let scrapingId;
+        let device_id;
+        if (req.query.scraping_id) scrapingId = req.query.scraping_id;
+        if (req.query.device_id) device_id = req.query.device_id;
+        await getProcessInfo(device_id, scrapingId, res);
     });
 
 getGeoJson = async (city, scrapingId, res) => {
@@ -53,6 +64,20 @@ getResults = async (city, scrapingId, res) => {
 getScrapedCities = async (scrapingId, res) => {
     console.log("----> id " + scrapingId);
     const result = await db.getScrapedCities(scrapingId);
+    return res.json(result);
+}
+
+getProcessInfo = async (device_id, scrapingId, res) => {
+    console.log("----> id " + device_id);
+    const result ={};
+    const scrapedNum = await db.getScrapedCount(device_id, true);
+    const scrapedRemaning = await db.getScrapedCount(device_id, false);
+    const lastPiece = await db.getLastPiece(scrapingId);
+    result["scraped_pieces"] = scrapedNum;
+    result["scraped_remaining"]= scrapedRemaning;
+    result["scraped_pieces_percent"] = scrapedNum / (scrapedNum + scrapedRemaning) * 100;
+    result["last_piece"] =lastPiece[0]["scraping_id"];
+    console.log(result);
     return res.json(result);
 }
 

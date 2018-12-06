@@ -23,4 +23,3 @@ stateExecutionFindMysql = async (res, skip, limit, order = "asc") => {
 }
 
 module.exports = router;
-
