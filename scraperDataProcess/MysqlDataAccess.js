@@ -89,10 +89,8 @@ module.exports = class MysqlDataAccess {
     }
 
     async getScrapingExecutionLog(limit, offset, order = "desc") {
-        const sql = `select t.scraping_id, t.last_piece,r.date_scraped, r.app_id, r.device_id
-        from (select * from scraping_execution_log 
-        left join  scraping_pieces_index on scraping_execution_log.last_piece = scraping_pieces_index.piece_id) t 
-        left join scraping_results r on t.last_piece = r.piece_id
+        const sql = `select t.*, r.date_scraped, r.app_id, r.device_id from scraping_execution_log t, scraping_results r 
+        where t.last_piece = r.piece_id
         order by r.date_scraped ${order}
         limit ${limit}
         offset ${offset};`;
