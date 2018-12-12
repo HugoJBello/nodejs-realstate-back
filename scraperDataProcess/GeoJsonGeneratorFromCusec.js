@@ -1,36 +1,58 @@
 
 
-module.exports = class GeoJsonGeneratorFromResult {
+module.exports = class GeoJsonGeneratorFromCusec {
     constructor() {
         this.maxOpacity = 0.8;
     }
 
-    generateGeoJsonFromResult(scrapingCityResult) {
+    generateGeoJsonFromResultFromCusec(scrapingCityResult) {
         const result = { type: "FeatureCollection", features: [] };
         const maxValues = this.calculateMaxValues(scrapingCityResult);
         console.log(maxValues);
         for (const resultScraping of scrapingCityResult) {
             console.log(resultScraping);
+            const geometry = this.getGeometry(resultScraping)
+            console.log(geometry);
             const boundingBox = this.getBoundingBox(resultScraping)
 
-            const feature = this.generateFeature(boundingBox, resultScraping, maxValues);
+            const feature = this.generateFeature(geometry, boundingBox, resultScraping, maxValues);
             result.features.push(feature);
         }
         return result;
     }
 
+    getGeometry(result) {
+        return JSON.parse(result.geojson_coordinates.replace(new RegExp("'", 'g'), "\""));
+    }
     getBoundingBox(result) {
         return [[result.bounding_box1_x, result.bounding_box1_y], [result.bounding_box2_x, result.bounding_box2_y]]
     }
 
     //modeoutpu can be "buy-prize" "buy-ads" "rent-prize" or "rent-ads", first param is buy/rent second if we want to display
     // number of ads or average prize. This will set the stiles of the geojson
-    generateFeature(boundingBox, result, maxValues, modeOutput = "buy-prize") {
+    generateFeature(geometry, boundingBox, result, maxValues, modeOutput = "buy-prize") {
         const feature = {
             type: "Feature", properties: {}, bbox: [], geometry: {
                 type: "Polygon", coordinates: []
             }
         };
+        let normalized_prize_buy = 0;
+        let normalized_ads_buy = 0;
+        let normalized_prize_rent = 0;
+        let normalized_ads_rent = 0;
+
+        if (maxValues.maxPrizeBuy !== 0) {
+            normalized_prize_buy = (result.average_prize_buy / maxValues.maxPrizeBuy);
+        }
+        if (maxValues.maxNumberAdsBuy !== 0) {
+            normalized_ads_buy = (result.number_of_ads_buy / maxValues.maxNumberAdsBuy);
+        }
+        if (maxValues.maxPrizeRent !== 0) {
+            normalized_prize_rent = (result.average_prize_rent / maxValues.maxPrizeRent);
+        }
+        if (maxValues.maxNumberAdsRent !== 0) {
+            normalized_ads_rent = (result.number_of_ads_rent / maxValues.maxNumberAdsRent);
+        }
 
         if (result) {
             feature.properties = {
@@ -39,10 +61,10 @@ module.exports = class GeoJsonGeneratorFromResult {
                 average_prize_buy: result.average_prize_buy,
                 number_of_ads_rent: result.number_of_ads_rent,
                 average_prize_rent: result.average_prize_rent,
-                normalized_prize_buy: (result.average_prize_buy / maxValues.maxPrizeBuy),
-                normalized_ads_buy: (result.number_of_ads_buy / maxValues.maxNumberAdsBuy),
-                normalized_prize_rent: (result.average_prize_rent / maxValues.maxPrizeRent),
-                normalized_ads_rent: (result.number_of_ads_rent / maxValues.maxNumberAdsRent),
+                normalized_prize_buy,
+                normalized_ads_buy,
+                normalized_prize_rent,
+                normalized_ads_rent,
                 date: result.date_scraped
             };
 
@@ -68,10 +90,9 @@ module.exports = class GeoJsonGeneratorFromResult {
         */
 
         const bbox = [boundingBox[1][0], boundingBox[1][1], boundingBox[0][0], boundingBox[0][1]];
-        const coordinates = [[[bbox[0], bbox[3]], [bbox[2], bbox[3]], [bbox[2], bbox[1]], [bbox[0], bbox[1]], [bbox[0], bbox[3]]]]
 
         feature.bbox = bbox;
-        feature.geometry.coordinates = coordinates;
+        feature.geometry = geometry.geometry;
         return feature;
     }
 
@@ -81,11 +102,16 @@ module.exports = class GeoJsonGeneratorFromResult {
         let maxNumberAdsRent = 0;
         let maxNumberAdsBuy = 0;
         for (const result of results) {
-            maxPrizeBuy = Math.max(maxPrizeBuy, result.average_prize_buy);
-            maxPrizeRent = Math.max(maxPrizeRent, result.average_prize_rest);
-            maxNumberAdsBuy = Math.max(maxNumberAdsBuy, result.number_of_ads_buy);
-            maxNumberAdsRent = Math.max(maxNumberAdsBuy, result.number_of_ads_rent);
+            if (result.average_prize_buy) maxPrizeBuy = Math.max(maxPrizeBuy, result.average_prize_buy);
+            if (result.average_prize_rent) maxPrizeRent = Math.max(maxPrizeRent, result.average_prize_rent);
+            if (result.number_of_ads_buy) maxNumberAdsBuy = Math.max(maxNumberAdsBuy, result.number_of_ads_buy);
+            if (result.number_of_ads_rent) maxNumberAdsRent = Math.max(maxNumberAdsRent, result.number_of_ads_rent);
         }
-        return { maxNumberAdsBuy, maxNumberAdsRent, maxPrizeBuy, maxPrizeRent };
+        return {
+            maxNumberAdsBuy: maxNumberAdsBuy,
+            maxNumberAdsRent: maxNumberAdsRent,
+            maxPrizeBuy: maxPrizeBuy,
+            maxPrizeRent: maxPrizeRent
+        };
     }
 }
